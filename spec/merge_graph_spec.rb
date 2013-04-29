@@ -3,13 +3,13 @@ require File.join(File.dirname(__FILE__), 'spec_helper')
 shared_examples "MergeGraph" do
   require 'rdf/spec/countable'
   require 'rdf/spec/enumerable'
-  #require 'rdf/spec/queryable'
+  require 'rdf/spec/queryable'
 
   before(:each) {@queryable = @enumerable = @countable = @merge_graph}
 
   include RDF_Enumerable
   include RDF_Countable
-  #include RDF_Queryable
+  include RDF_Queryable
 end
 
 describe RDF::MergeGraph do

@@ -6,12 +6,13 @@ shared_examples "AggregateRepo" do
   #include RDF_Repository
   require 'rdf/spec/countable'
   require 'rdf/spec/enumerable'
-  #require 'rdf/spec/queryable'
+  require 'rdf/spec/queryable'
 
-  before(:each) {@enumerable = @countable = @repository}
+  before(:each) {@queryable = @enumerable = @countable = @repository}
 
   include RDF_Enumerable
   include RDF_Countable
+  include RDF_Queryable
 end
 
 describe RDF::AggregateRepo do
@@ -67,6 +68,23 @@ describe RDF::AggregateRepo do
     include_examples "AggregateRepo", @repository
   end
 
-  context "multiple sources" do
+  context "with specific named entities" do
+    let(:repo) {RDF::Repository.new {|r| RDF::Spec.quads.each {|s| r << s}}}
+    let(:gkellogg) {RDF::Graph("http://greggkellogg.net/foaf#me", :data => repo)}
+    let(:bendiken) {RDF::Graph("http://ar.to/#self", :data => repo)}
+    let(:bhuga) {RDF::Graph("http://bhuga.net/#ben", :data => repo)}
+    before(:each) do
+      r = repo
+      @repository = RDF::AggregateRepo.new do
+        source r
+        default RDF::URI("http://greggkellogg.net/foaf#me")
+        named RDF::URI("http://ar.to/#self")
+        named RDF::URI("http://bhuga.net/#ben")
+      end
+    end
+    subject {@repository}
+
+    it {should_not be_empty}
+    its(:count) {should == [gkellogg, bendiken, bhuga].map(&:count).reduce(:+)}
   end
 end

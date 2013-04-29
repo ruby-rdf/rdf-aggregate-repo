@@ -119,35 +119,60 @@ module RDF
     def writable?; false; end
 
     ##
-    # @private
+    # Returns `true` all constituent graphs are durable.
+    #
+    # @return [Boolean]
     # @see RDF::Durable#durable?
     def durable?
       sources.all?(&:durable?)
     end
 
     ##
-    # @private
+    # Returns `true` if all constituent graphs are empty.
+    #
+    # @return [Boolean]
     # @see RDF::Countable#empty?
     def empty?
       count == 0
     end
 
     ##
-    # @private
+    # Returns the number of RDF statements in all constituent graphs.
+    #
+    # @return [Integer]
     # @see RDF::Countable#count
     def count
       each_graph.to_a.reduce(0) {|memo, g| memo += g.count}
     end
 
     ##
-    # @private
+    # Returns `true` if any constituent graph contains the given RDF statement.
+    #
+    # @param  [RDF::Statement] statement
+    # @return [Boolean]
     # @see RDF::Enumerable#has_statement?
     def has_statement?(statement)
       each_graph.to_a.any? {|g| g.has_statement?(statement)}
     end
 
     ##
-    # @private
+    # Iterates the given block for each RDF statement.
+    #
+    # If no block was given, returns an enumerator.
+    #
+    # The order in which statements are yielded is undefined.
+    #
+    # @overload each_statement
+    #   @yield  [statement]
+    #     each statement
+    #   @yieldparam  [RDF::Statement] statement
+    #   @yieldreturn [void] ignored
+    #   @return [void]
+    #
+    # @overload each_statement
+    #   @return [Enumerator]
+    #
+    # @return [void]
     # @see RDF::Repository#each_statement
     # @see RDF::Enumerable#each_statement
     def each_statement(&block)
@@ -159,23 +184,46 @@ module RDF
     end
 
     ##
-    # @private
+    # Enumerates each RDF statement in constituent graphs
+    #
+    # @yield  [statement]
+    # @yieldparam [Statement] statement
+    # @return [Enumerator]
     # @see RDF::Enumerable#each
     def each(&block)
-      if block_given?
-        each_graph {|g| g.each(&block)}
-      end
+      return to_enum unless block_given?
+      each_graph {|g| g.each(&block)}
     end
 
     ##
-    # @private
+    # Returns `true` if any constituent grahp contains the given RDF context.
+    #
+    # @param  [RDF::Resource, false] value
+    #   Use value `false` to query for the default context
+    # @return [Boolean]
     # @see RDF::Enumerable#has_context?
     def has_context?(value)
       @contexts.include?(value)
     end
 
     ##
-    # @private
+    # Iterates the given block for each unique RDF context, other than the default context.
+    #
+    # If no block was given, returns an enumerator.
+    #
+    # The order in which values are yielded is undefined.
+    #
+    # @overload each_context
+    #   @yield  [context]
+    #     each context term
+    #   @yieldparam  [RDF::Resource] context
+    #   @yieldreturn [void] ignored
+    #   @return [void]
+    #
+    # @overload each_context
+    #   @return [Enumerator]
+    #
+    # @return [void]
     # @see RDF::Enumerable#each_context
     def each_context(&block)
       if block_given?
@@ -188,6 +236,21 @@ module RDF
     ##
     # Iterate over each graph, in order, finding named graphs from the most recently added `source`.
     #
+    # If no block was given, returns an enumerator.
+    #
+    # The order in which graphs are yielded is undefined.
+    #
+    # @overload each_graph
+    #   @yield  [graph]
+    #     each graph
+    #   @yieldparam  [RDF::Graph] graph
+    #   @yieldreturn [void] ignored
+    #   @return [void]
+    #
+    # @overload each_graph
+    #   @return [Enumerator]
+    #
+    # @return [void]
     # @see RDF::Enumerable#each_graph
     def each_graph(&block)
       if block_given?
@@ -205,7 +268,37 @@ module RDF
   protected
 
     ##
+    # Queries each constituent graph for RDF statements matching the given `pattern`,
+    # yielding each matched statement to the given block.
+    #
+    # @param  [RDF::Query::Pattern] pattern
+    #   the query pattern to match
+    # @yield  [statement]
+    # @yieldparam  [RDF::Statement] statement
+    # @yieldreturn [void] ignored
+    # @return [void] ignored
+    # @see RDF::Queryable#query_pattern
     def query_pattern(pattern, &block)
+      case pattern.context
+      when nil
+        # Query against all graphs
+        each_graph {|graph| graph.send(:query_pattern, pattern, &block)}
+      when FalseClass
+        # Query against default graph only
+        default_graph.send(:query_pattern, pattern, &block)
+      when RDF::Query::Variable
+        # Query against all named graphs
+        each_context do |context|
+          source  = sources.reverse.detect {|s| s.has_context?(context)}
+          RDF::Graph.new(context, :data => source).send(:query_pattern, pattern, &block)
+        end
+      else
+        # Query against a specific context
+        if @contexts.include?(pattern.context)
+          source  = sources.reverse.detect {|s| s.has_context?(pattern.context)}
+          RDF::Graph.new(pattern.context, :data => source).send(:query_pattern, pattern, &block)
+        end
+      end
     end
 
     ##

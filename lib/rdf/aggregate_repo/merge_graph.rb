@@ -190,7 +190,14 @@ module RDF
   protected
 
     ##
+    # @private
+    # @see RDF::Queryable#query_pattern
     def query_pattern(pattern, &block)
+      pattern = pattern.dup
+      sources.each do |(source, ctx)|
+        pattern.context = ctx
+        source.send(:query_pattern, pattern, &block)
+      end
     end
   end
 end
