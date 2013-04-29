@@ -265,6 +265,39 @@ module RDF
       enum_graph
     end
 
+    ##
+    # Default graph of this aggregate, either a projection of the source
+    # default graph (if `false`), a particular named graph from the
+    # last source in which it appears, or a MergeGraph composed of the
+    # graphs which compose it.
+    #
+    # @return [RDF::Graph]
+    def default_graph
+      @default_graph ||= begin
+        case
+        when sources.length == 0 || defaults.length == 0
+          RDF::Graph.new
+        when defaults.length == 1 && sources.length == 1
+          RDF::Graph.new((defaults.first || nil), :data => sources.first)
+        else
+          # Otherwise, create a MergeGraph from the set of pairs of source and context
+          RDF::MergeGraph.new(:name => nil) do |graph|
+            if defaults == [false]
+              graph.sources.each do |s|
+                # Add default graph from each source
+                source s, false
+              end
+            else
+              defaults.each do |context|
+                # add the named graph
+                graph.source sources.reverse.detect {|s| s.has_context?(context)}, context
+              end
+            end
+          end
+        end
+      end
+    end
+
   protected
 
     ##
@@ -297,39 +330,6 @@ module RDF
         if @contexts.include?(pattern.context)
           source  = sources.reverse.detect {|s| s.has_context?(pattern.context)}
           RDF::Graph.new(pattern.context, :data => source).send(:query_pattern, pattern, &block)
-        end
-      end
-    end
-
-    ##
-    # Default graph of this aggregate, either a projection of the source
-    # default graph (if `false`), a particular named graph from the
-    # last source in which it appears, or a MergeGraph composed of the
-    # graphs which compose it.
-    #
-    # @return [RDF::Graph]
-    def default_graph
-      @default_graph ||= begin
-        case
-        when sources.length == 0 || defaults.length == 0
-          RDF::Graph.new
-        when defaults.length == 1 && sources.length == 1
-          RDF::Graph.new((defaults.first || nil), :data => sources.first)
-        else
-          # Otherwise, create a MergeGraph from the set of pairs of source and context
-          RDF::MergeGraph.new(:name => nil) do
-            if defaults == [false]
-              sources.each do |s|
-                # Add default graph from each source
-                source s, false
-              end
-            else
-              each_context do |context|
-                # add the named graph
-                source sources.reverse.detect {|s| s.has_context?(context)}, context
-              end
-            end
-          end
         end
       end
     end
