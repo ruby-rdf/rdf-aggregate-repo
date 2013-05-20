@@ -7,7 +7,7 @@
 @prefix ex:   <http://example.org/> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-<http://rubygems.org/gems/rdf-turtle> a doap:Project, earl:Software ;
+<http://rubygems.org/gems/rdf-aggregate-repo> a doap:Project, earl:Software ;
   doap:name          "RDF::AggregateRepo" ;
   doap:homepage      <http://ruby-rdf.github.com/rdf-aggregate-repo> ;
   doap:license       <http://creativecommons.org/licenses/publicdomain/> ;
@@ -26,7 +26,7 @@
   doap:maintainer    <http://greggkellogg.net/foaf#me> ;
   doap:documenter    <http://greggkellogg.net/foaf#me> ;
   foaf:maker         <http://greggkellogg.net/foaf#me> ;
-  dc:title           "RDF::AggregateRepo" ;
+  dc:title           "RDF::AggregateRepo"@en ;
   dc:description     "A gem extending RDF.rb with SPARQL dataset construction semantics."@en ;
   dc:date            "2013-04-26"^^xsd:date ;
   dc:creator         <http://greggkellogg.net/foaf#me> ;
