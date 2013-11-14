@@ -26,7 +26,7 @@ describe RDF::AggregateRepo do
     it {should be_empty}
     its(:count) {should == 0}
     its(:size) {should == 0}
-    its(:statements) {subject.statements.to_a.should == []}
+    its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "source which is empty" do
@@ -34,7 +34,7 @@ describe RDF::AggregateRepo do
     it {should be_empty}
     its(:count) {should == 0}
     its(:size) {should == 0}
-    its(:statements) {subject.statements.to_a.should == []}
+    its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "multiple sources which are empty" do
@@ -48,7 +48,7 @@ describe RDF::AggregateRepo do
     it {should be_empty}
     its(:count) {should == 0}
     its(:size) {should == 0}
-    its(:statements) {subject.statements.to_a.should == []}
+    its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "single source" do
@@ -114,7 +114,7 @@ describe RDF::AggregateRepo do
         graph1.each_subject.select {|s| s.node?}.each do |bnode|
           subject.each_graph do |graph2|
             next if graph1 == graph2
-            graph2.subjects.select(&:node?).each {|n| n.should_not be_eql(bnode)}
+            graph2.subjects.select(&:node?).each {|n| expect(n).not_to be_eql(bnode)}
           end
         end
       end

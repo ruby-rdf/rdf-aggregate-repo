@@ -25,7 +25,7 @@ describe RDF::MergeGraph do
     it {should be_empty}
     its(:count) {should == 0}
     its(:size) {should == 0}
-    its(:statements) {subject.statements.to_a.should == []}
+    its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "source which is empty" do
@@ -33,7 +33,7 @@ describe RDF::MergeGraph do
     it {should be_empty}
     its(:count) {should == 0}
     its(:size) {should == 0}
-    its(:statements) {subject.statements.to_a.should == []}
+    its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "multiple sources which are empty" do
@@ -47,7 +47,7 @@ describe RDF::MergeGraph do
     it {should be_empty}
     its(:count) {should == 0}
     its(:size) {should == 0}
-    its(:statements) {subject.statements.to_a.should == []}
+    its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "single source" do
@@ -71,7 +71,7 @@ describe RDF::MergeGraph do
     subject {@merge_graph}
     it {should be_named}
     it "each statement should have a context" do
-      subject.each {|s| s.context.should == RDF::URI("http://example")}
+      subject.each {|s| expect(s.context).to eq RDF::URI("http://example")}
     end
   end
 
