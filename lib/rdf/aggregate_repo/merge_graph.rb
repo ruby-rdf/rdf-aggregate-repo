@@ -90,12 +90,15 @@ module RDF
     # MergeGraph is writable if any source is writable. Updates go to the last writable source.
     #
     # @return [Boolean]
-    def writable?; sources.any?(&:writable?); end
+    def writable?
+      sources.any? {|(source, ctx)| source.writable?}
+    end
 
     ##
     # Add a queryable to the set of constituent queryable instances
     #
     # @param [RDF::Queryable] queryable
+    # @param [RDF::Resource] context
     # @return [RDF::MergeGraph] self
     def source(queryable, context)
       @sources << [queryable, context]
@@ -119,7 +122,7 @@ module RDF
     # @private
     # @see RDF::Durable#durable?
     def durable?
-      sources.all?(&:durable?)
+      sources.all? {|(source, ctx)| source.durable?}
     end
 
     ##
@@ -150,8 +153,10 @@ module RDF
     ##
     # @see RDF::Enumerable#each_statement
     def each(&block)
+      return enum_for(:each) unless block_given?
+
       # Add everything to a new graph for de-duplication
-      tmp = RDF::Graph.new(@context)
+      tmp = RDF::Graph.new(@context, :data => RDF::Repository.new)
       sources.each do |(source, ctx)|
         tmp << RDF::Graph.new(ctx || nil, :data => source)
       end

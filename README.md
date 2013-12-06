@@ -38,9 +38,10 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single obje
 
 ## Author
 
-* [Gregg Kellogg](http://github.com/gkellogg) - <http://kellogg-assoc.com/>
+* [Gregg Kellogg](http://github.com/gkellogg) - <http://greggkellogg.net/>
 
 ## Contributing
+This repository uses [Git Flow](https://github.com/nvie/gitflow) to mange development and release activity. All submissions _must_ be on a feature branch based on the _develop_ branch to ease staging and integration.
 
 * Do your best to adhere to the existing coding conventions and idioms.
 * Don't use hard tabs, and don't leave trailing whitespace on any line.
@@ -64,3 +65,6 @@ see <http://unlicense.org/> or the accompanying {file:UNLICENSE} file.
 
 [RDF.rb]:           http://ruby-rdf.github.com/
 [SPARQL Datasets]:  http://www.w3.org/TR/sparql11-query/#rdfDataset
+[YARD]:             http://yardoc.org/
+[YARD-GS]:          http://rubydoc.info/docs/yard/file/docs/GettingStarted.md
+[PDD]:              http://lists.w3.org/Archives/Public/public-rdf-ruby/2010May/0013.html
