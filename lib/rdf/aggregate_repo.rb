@@ -62,7 +62,7 @@ module RDF
       
       @sources = queryable
       @defaults = []
-      @contexts = []
+      @named_graphs = []
 
       if block_given?
         case block.arity
@@ -100,14 +100,14 @@ module RDF
 
     ##
     # Add a named graph projection. Dynamically binds to the
-    # last `queryable` having a matching context.
+    # last `queryable` having a matching graph.
     #
     # @param [RDF::Resource] name
     # @return [RDF::AggregateRepo] self
     def named(name)
       raise ArgumentError, "name must be an RDF::Resource: #{name.inspect}" unless name.is_a?(RDF::Resource)
-      raise ArgumentError, "name does not exist in loaded sources" unless sources.any?{|s| s.has_context?(name)}
-      @contexts << name
+      raise ArgumentError, "name does not exist in loaded sources" unless sources.any?{|s| s.has_graph?(name)}
+      @named_graphs << name
     end
 
     # Repository overrides
@@ -196,42 +196,15 @@ module RDF
     end
 
     ##
-    # Returns `true` if any constituent grahp contains the given RDF context.
+    # Returns `true` if any constituent grahp contains the given RDF graph.
     #
     # @param  [RDF::Resource, false] value
-    #   Use value `false` to query for the default context
+    #   Use value `false` to query for the default graph
     # @return [Boolean]
-    # @see RDF::Enumerable#has_context?
-    def has_context?(value)
-      @contexts.include?(value)
+    # @see RDF::Enumerable#has_graph?
+    def has_graph?(value)
+      @named_graphs.include?(value)
     end
-
-    ##
-    # Iterates the given block for each unique RDF context, other than the default context.
-    #
-    # If no block was given, returns an enumerator.
-    #
-    # The order in which values are yielded is undefined.
-    #
-    # @overload each_context
-    #   @yield  [context]
-    #     each context term
-    #   @yieldparam  [RDF::Resource] context
-    #   @yieldreturn [void] ignored
-    #   @return [void]
-    #
-    # @overload each_context
-    #   @return [Enumerator]
-    #
-    # @return [void]
-    # @see RDF::Enumerable#each_context
-    def each_context(&block)
-      if block_given?
-        @contexts.each(&block)
-      end
-      enum_context
-    end
-
 
     ##
     # Iterate over each graph, in order, finding named graphs from the most recently added `source`.
@@ -248,18 +221,17 @@ module RDF
     #   @return [void]
     #
     # @overload each_graph
-    #   @return [Enumerator]
+    #   @return [Enumerator<RDF::Graph>]
     #
-    # @return [void]
     # @see RDF::Enumerable#each_graph
     def each_graph(&block)
       if block_given?
-        block.call(default_graph)
+        yield default_graph
 
-        # Send context from appropriate source
-        each_context do |context|
-          source  = sources.reverse.detect {|s| s.has_context?(context)}
-          block.call(RDF::Graph.new(context, :data => source))
+        # Send graph from appropriate source
+        @named_graphs.each do |graph_name|
+          source  = sources.reverse.detect {|s| s.has_graph?(graph_name)}
+          block.call(RDF::Graph.new(graph_name, data: source))
         end
       end
       enum_graph
@@ -280,17 +252,17 @@ module RDF
         when defaults.length == 1 && sources.length == 1
           RDF::Graph.new((defaults.first || nil), :data => sources.first)
         else
-          # Otherwise, create a MergeGraph from the set of pairs of source and context
-          RDF::MergeGraph.new(:name => nil) do |graph|
+          # Otherwise, create a MergeGraph from the set of pairs of source and graph_name
+          RDF::MergeGraph.new(name: nil) do |graph|
             if defaults == [false]
               graph.sources.each do |s|
                 # Add default graph from each source
                 source s, false
               end
             else
-              defaults.each do |context|
+              defaults.each do |graph_name|
                 # add the named graph
-                graph.source sources.reverse.detect {|s| s.has_context?(context)}, context
+                graph.source sources.reverse.detect {|s| s.has_graph?(graph_name)}, graph_name
               end
             end
           end
@@ -312,7 +284,7 @@ module RDF
     # @return [void] ignored
     # @see RDF::Queryable#query_pattern
     def query_pattern(pattern, &block)
-      case pattern.context
+      case pattern.graph_name
       when nil
         # Query against all graphs
         each_graph {|graph| graph.send(:query_pattern, pattern, &block)}
@@ -321,15 +293,15 @@ module RDF
         default_graph.send(:query_pattern, pattern, &block)
       when RDF::Query::Variable
         # Query against all named graphs
-        each_context do |context|
-          source  = sources.reverse.detect {|s| s.has_context?(context)}
-          RDF::Graph.new(context, :data => source).send(:query_pattern, pattern, &block)
+        each_graph do |graph|
+          source  = sources.reverse.detect {|s| s.has_graph?(graph.graph_name)}
+          RDF::Graph.new(graph.graph_name, data: source).send(:query_pattern, pattern, &block)
         end
       else
-        # Query against a specific context
-        if @contexts.include?(pattern.context)
-          source  = sources.reverse.detect {|s| s.has_context?(pattern.context)}
-          RDF::Graph.new(pattern.context, :data => source).send(:query_pattern, pattern, &block)
+        # Query against a specific graph
+        if @named_graphs.include?(pattern.graph_name)
+          source  = sources.reverse.detect {|s| s.has_graph?(pattern.graph_name)}
+          RDF::Graph.new(pattern.graph_name, data: source).send(:query_pattern, pattern, &block)
         end
       end
     end

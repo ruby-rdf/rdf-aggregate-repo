@@ -9,11 +9,15 @@ shared_examples "AggregateRepo" do
   require 'rdf/spec/enumerable'
   require 'rdf/spec/queryable'
 
-  before(:each) {@queryable = @enumerable = @countable = @repository}
-
-  include RDF_Enumerable
-  include RDF_Countable
-  include RDF_Queryable
+  it_behaves_like "an RDF::Enumerable" do
+    let(:enumerable) {@repository}
+  end
+  it_behaves_like "an RDF::Countable" do
+    let(:countable) {@repository}
+  end
+  it_behaves_like "an RDF::Queryable" do
+    let(:queryable) {@repository}
+  end
 end
 
 describe RDF::AggregateRepo do
@@ -59,7 +63,8 @@ describe RDF::AggregateRepo do
         source r
         default false
       end
-      repo.each_context {|c| @repository.named(c)}  # Add all named contexts
+      # Add all named graphs
+      repo.each_graph {|c| @repository.named(c.graph_name) if c.graph_name}
     end
     subject {@repository}
 
@@ -95,7 +100,7 @@ describe RDF::AggregateRepo do
       @repository = RDF::AggregateRepo.new(@repo)
       Dir.glob(File.expand_path("..", __FILE__) + "/data/*.ttl").each do |f|
         base = RDF::URI("http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/#{f.split('/').last}")
-        @repo.load(f, :base_uri => base, :context => base)
+        @repo.load(f, base_uri: base, graph_name: base)
         if f =~ /dup/
           @repository.defaults << base
         else

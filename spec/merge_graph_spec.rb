@@ -5,11 +5,15 @@ shared_examples "MergeGraph" do
   require 'rdf/spec/enumerable'
   require 'rdf/spec/queryable'
 
-  before(:each) {@queryable = @enumerable = @countable = @merge_graph}
-
-  include RDF_Enumerable
-  include RDF_Countable
-  include RDF_Queryable
+  it_behaves_like "an RDF::Enumerable" do
+    let(:enumerable) {@merge_graph}
+  end
+  it_behaves_like "an RDF::Countable" do
+    let(:countable) {@merge_graph}
+  end
+  it_behaves_like "an RDF::Queryable" do
+    let(:queryable) {@merge_graph}
+  end
 end
 
 describe RDF::MergeGraph do
@@ -71,7 +75,7 @@ describe RDF::MergeGraph do
     subject {@merge_graph}
     it {should be_named}
     it "each statement should have a context" do
-      subject.each {|s| expect(s.context).to eq RDF::URI("http://example")}
+      subject.each {|s| expect(s.graph_name).to eq RDF::URI("http://example")}
     end
   end
 
