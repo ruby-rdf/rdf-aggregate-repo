@@ -23,21 +23,21 @@ end
 describe RDF::AggregateRepo do
   subject {RDF::AggregateRepo.new}
 
-  it {should_not be_writable}
+  it {is_expected.not_to be_writable}
 
   context "no sources" do
     subject {RDF::AggregateRepo.new}
-    it {should be_empty}
-    its(:count) {should == 0}
-    its(:size) {should == 0}
+    it {is_expected.to be_empty}
+    its(:count) {is_expected.to eql 0}
+    its(:size) {is_expected.to eql 0}
     its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "source which is empty" do
     subject {RDF::AggregateRepo.new { source RDF::Repository.new}}
-    it {should be_empty}
-    its(:count) {should == 0}
-    its(:size) {should == 0}
+    it {is_expected.to be_empty}
+    its(:count) {is_expected.to eql 0}
+    its(:size) {is_expected.to eql 0}
     its(:statements) {expect(subject.statements).to be_empty}
   end
 
@@ -49,9 +49,9 @@ describe RDF::AggregateRepo do
      end
    }
 
-    it {should be_empty}
-    its(:count) {should == 0}
-    its(:size) {should == 0}
+    it {is_expected.to be_empty}
+    its(:count) {is_expected.to eql 0}
+    its(:size) {is_expected.to eql 0}
     its(:statements) {expect(subject.statements).to be_empty}
   end
 
@@ -68,17 +68,29 @@ describe RDF::AggregateRepo do
     end
     subject {@repository}
 
-    it {should_not be_empty}
-    its(:count) {should == repo.count}
+    it {is_expected.not_to be_empty}
+    its(:count) {is_expected.to eql repo.count}
+    its(:graph_names) {is_expected.to include(*@repository.graph_names)}
+    describe "#default_graph" do
+      subject {@repository.default_graph}
+      its(:count) {is_expected.to eql repo.reject(&:graph_name).length}
+      it "statements have no graph_name" do
+        expect(subject.statements.map(&:graph_name)).to all(be_nil)
+      end
+    end
+    describe "#enum_graph" do
+      subject {@repository.enum_graph}
+      its(:count) {is_expected.to eql repo.each_graph.count}
+    end
 
     include_examples "AggregateRepo", @repository
   end
 
   context "with specific named entities" do
     let(:repo) {RDF::Repository.new {|r| RDF::Spec.quads.each {|s| r << s}}}
-    let(:gkellogg) {RDF::Graph("http://greggkellogg.net/foaf#me", :data => repo)}
-    let(:bendiken) {RDF::Graph("http://ar.to/#self", :data => repo)}
-    let(:bhuga) {RDF::Graph("http://bhuga.net/#ben", :data => repo)}
+    let(:gkellogg) {RDF::Graph("http://greggkellogg.net/foaf#me", data: repo)}
+    let(:bendiken) {RDF::Graph("http://ar.to/#self", data: repo)}
+    let(:bhuga) {RDF::Graph("http://bhuga.net/#ben", data: repo)}
     before(:each) do
       r = repo
       @repository = RDF::AggregateRepo.new do
@@ -90,8 +102,20 @@ describe RDF::AggregateRepo do
     end
     subject {@repository}
 
-    it {should_not be_empty}
-    its(:count) {should == [gkellogg, bendiken, bhuga].map(&:count).reduce(:+)}
+    it {is_expected.not_to be_empty}
+    its(:count) {is_expected.to eql [gkellogg, bendiken, bhuga].map(&:count).reduce(:+)}
+    its(:graph_names) {is_expected.to eql [RDF::URI("http://ar.to/#self"), RDF::URI("http://bhuga.net/#ben")]}
+    describe "#default_graph" do
+      subject {@repository.default_graph}
+      its(:count) {is_expected.to eql gkellogg.count}
+      it "statements have no graph_name" do
+        expect(subject.statements.map(&:graph_name)).to all(be_nil)
+      end
+    end
+    describe "#enum_graph" do
+      subject {@repository.enum_graph}
+      its(:count) {is_expected.to eql 3}
+    end
   end
 
   context "dataset-12b" do
@@ -111,8 +135,8 @@ describe RDF::AggregateRepo do
     let(:repo) {@repo}
     subject {@repository}
 
-    its(:sources) {should_not be_empty}
-    its(:defaults) {should_not be_empty}
+    its(:sources) {is_expected.not_to be_empty}
+    its(:defaults) {is_expected.not_to be_empty}
 
     it "has distinct BNodes in each graph" do
       subject.each_graph do |graph1|

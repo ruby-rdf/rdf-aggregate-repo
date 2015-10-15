@@ -249,8 +249,9 @@ module RDF
         case
         when sources.length == 0 || defaults.length == 0
           RDF::Graph.new
-        when defaults.length == 1 && sources.length == 1
-          RDF::Graph.new((defaults.first || nil), :data => sources.first)
+        when defaults == [false] && sources.length == 1
+          # Trivial case
+          RDF::Graph.new(nil, data: sources.first)
         else
           # Otherwise, create a MergeGraph from the set of pairs of source and graph_name
           RDF::MergeGraph.new(name: nil) do |graph|
