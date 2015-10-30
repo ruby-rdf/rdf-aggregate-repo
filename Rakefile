@@ -15,8 +15,8 @@ namespace :gem do
 end
 
 desc 'Default: run specs.'
-task :default => :spec
-task :specs => :spec
+task default: :spec
+task specs: :spec
 
 require 'rspec/core/rake_task'
 desc 'Run specifications'

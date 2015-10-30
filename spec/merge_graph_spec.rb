@@ -5,34 +5,38 @@ shared_examples "MergeGraph" do
   require 'rdf/spec/enumerable'
   require 'rdf/spec/queryable'
 
-  before(:each) {@queryable = @enumerable = @countable = @merge_graph}
-
-  include RDF_Enumerable
-  include RDF_Countable
-  include RDF_Queryable
+  it_behaves_like "an RDF::Enumerable" do
+    let(:enumerable) {@merge_graph}
+  end
+  it_behaves_like "an RDF::Countable" do
+    let(:countable) {@merge_graph}
+  end
+  it_behaves_like "an RDF::Queryable" do
+    let(:queryable) {@merge_graph}
+  end
 end
 
 describe RDF::MergeGraph do
   subject {RDF::MergeGraph.new}
 
-  it {should be_graph}
-  it {should be_unnamed}
-  it {should_not be_named}
-  it {should_not be_writable}
+  it {is_expected.to be_graph}
+  it {is_expected.to be_unnamed}
+  it {is_expected.not_to be_named}
+  it {is_expected.not_to be_writable}
 
   context "no sources" do
     subject {RDF::MergeGraph.new}
-    it {should be_empty}
-    its(:count) {should == 0}
-    its(:size) {should == 0}
+    it {is_expected.to be_empty}
+    its(:count) {is_expected.to eql 0}
+    its(:size) {is_expected.to eql 0}
     its(:statements) {expect(subject.statements).to be_empty}
   end
 
   context "source which is empty" do
     subject {RDF::MergeGraph.new { source RDF::Graph.new, false}}
-    it {should be_empty}
-    its(:count) {should == 0}
-    its(:size) {should == 0}
+    it {is_expected.to be_empty}
+    its(:count) {is_expected.to eql 0}
+    its(:size) {is_expected.to eql 0}
     its(:statements) {expect(subject.statements).to be_empty}
   end
 
@@ -44,9 +48,9 @@ describe RDF::MergeGraph do
      end
    }
 
-    it {should be_empty}
-    its(:count) {should == 0}
-    its(:size) {should == 0}
+    it {is_expected.to be_empty}
+    its(:count) {is_expected.to eql 0}
+    its(:size) {is_expected.to eql 0}
     its(:statements) {expect(subject.statements).to be_empty}
   end
 
@@ -69,9 +73,9 @@ describe RDF::MergeGraph do
       end
     end
     subject {@merge_graph}
-    it {should be_named}
+    it {is_expected.to be_named}
     it "each statement should have a context" do
-      subject.each {|s| expect(s.context).to eq RDF::URI("http://example")}
+      subject.each {|s| expect(s.graph_name).to eq RDF::URI("http://example")}
     end
   end
 

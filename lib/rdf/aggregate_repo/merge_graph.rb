@@ -35,21 +35,21 @@ module RDF
     # Name of this graph, used for setting the context on returned `Statements`.
     #
     # @return [Array<RDF::URI, false>]
-    attr_reader :context
+    attr_reader :graph_name
 
     ##
     # Create a new aggregation instance.
     #
     # @overload initialize(queryable = [], options = {})
     #   @param [Hash{Symbol => Object}] options ({})
-    #   @option options [RDF::Resource] :context
-    #   @option options [RDF::Resource] :name alias for :context
+    #   @option options [RDF::Resource] :graph_name
+    #   @option options [RDF::Resource] :name alias for :graph_name
     #   @yield merger
     #   @yieldparam [RDF::MergeGraph] self
     #   @yieldreturn [void] ignored
     def initialize(options = {}, &block)
       @sources = []
-      @context = options[:context] || options[:name]
+      @graph_name = options[:graph_name] || options[:name]
 
       if block_given?
         case block.arity
@@ -83,7 +83,7 @@ module RDF
     # @return [Boolean]
     # @note The next release, graphs will not be named, this will return true
     def unnamed?
-      @context.nil?
+      @graph_name.nil?
     end
 
     ##
@@ -98,21 +98,21 @@ module RDF
     # Add a queryable to the set of constituent queryable instances
     #
     # @param [RDF::Queryable] queryable
-    # @param [RDF::Resource] context
+    # @param [RDF::Resource] graph_name
     # @return [RDF::MergeGraph] self
-    def source(queryable, context)
-      @sources << [queryable, context]
+    def source(queryable, graph_name)
+      @sources << [queryable, graph_name]
       self
     end
     alias_method :add, :source
 
     ##
-    # Set the context for statements in this graph
+    # Set the graph_name for statements in this graph
     #
     # @param [RDF::Resource, false] name
     # @return [RDF::MergeGraph] self
     def name(name)
-      @context = name
+      @graph_name = name
       self
     end
 
@@ -145,7 +145,7 @@ module RDF
     def has_statement?(statement)
       sources.any? do |(source, ctx)|
         statement = statement.dup
-        statement.context = ctx
+        statement.graph_name = ctx
         source.has_statement?(statement)
       end
     end
@@ -156,30 +156,19 @@ module RDF
       return enum_for(:each) unless block_given?
 
       # Add everything to a new graph for de-duplication
-      tmp = RDF::Graph.new(@context, :data => RDF::Repository.new)
-      sources.each do |(source, ctx)|
-        tmp << RDF::Graph.new(ctx || nil, :data => source)
+      tmp = RDF::Graph.new(@graph_name, data: RDF::Repository.new)
+      sources.each do |(source, gn)|
+        tmp << RDF::Graph.new(gn || nil, data: source)
       end
       tmp.each(&block)
     end
 
     ##
     # @private
-    # @see RDF::Enumerable#has_context?
-    def has_context?(value)
-      @context == value
+    # @see RDF::Enumerable#has_graph?
+    def has_graph?(value)
+      @graph_name == value
     end
-
-    ##
-    # @private
-    # @see RDF::Enumerable#each_context
-    def each_context(&block)
-      if block_given?
-        block.call(context) if context
-      end
-      enum_context
-    end
-
 
     ##
     # Iterate over each graph, in order, finding named graphs from the most recently added `source`.
@@ -187,7 +176,7 @@ module RDF
     # @see RDF::Enumerable#each_graph
     def each_graph(&block)
       if block_given?
-        block.call(self)
+        yield self
       end
       enum_graph
     end
@@ -199,8 +188,8 @@ module RDF
     # @see RDF::Queryable#query_pattern
     def query_pattern(pattern, &block)
       pattern = pattern.dup
-      sources.each do |(source, ctx)|
-        pattern.context = ctx
+      sources.each do |(source, gn)|
+        pattern.graph_name = gn
         source.send(:query_pattern, pattern, &block)
       end
     end
