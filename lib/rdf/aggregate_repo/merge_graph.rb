@@ -186,11 +186,12 @@ module RDF
     ##
     # @private
     # @see RDF::Queryable#query_pattern
-    def query_pattern(pattern, &block)
+    def query_pattern(pattern, options = {}, &block)
+      return enum_for(:query_pattern, pattern, options) unless block_given?
       pattern = pattern.dup
       sources.each do |(source, gn)|
         pattern.graph_name = gn
-        source.send(:query_pattern, pattern, &block)
+        source.send(:query_pattern, pattern, options, &block)
       end
     end
   end

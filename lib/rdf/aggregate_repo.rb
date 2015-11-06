@@ -58,18 +58,11 @@ module RDF
     #   @yieldparam [RDF::AggregateRepo] aggregation
     #   @yieldreturn [void] ignored
     def initialize(*queryable, &block)
-      @options = queryable.last.is_a?(Hash) ? queryable.last.dup : {}
-      
+      options = queryable.last.is_a?(Hash) ? queryable.pop.dup : {}
       @sources = queryable
       @defaults = []
       @named_graphs = []
-
-      if block_given?
-        case block.arity
-        when 1 then block.call(self)
-        else instance_eval(&block)
-        end
-      end
+      super(options, &block)
     end
 
     ##
@@ -113,6 +106,17 @@ module RDF
     # Repository overrides
 
     ##
+    # @private
+    # @see RDF::Enumerable#supports?
+    def supports?(feature)
+      case feature.to_sym
+      when :graph_name   then @options[:with_graph_name]
+      when :validity  then @options.fetch(:with_validity, true)
+      else false
+      end
+    end
+
+    ##
     # Not writable
     #
     # @return [false]
@@ -152,7 +156,7 @@ module RDF
     # @return [Boolean]
     # @see RDF::Enumerable#has_statement?
     def has_statement?(statement)
-      each_graph.to_a.any? {|g| g.has_statement?(statement)}
+      each_graph.any? {|g| g.has_statement?(statement)}
     end
 
     ##
@@ -274,8 +278,9 @@ module RDF
   protected
 
     ##
-    # Queries each constituent graph for RDF statements matching the given `pattern`,
-    # yielding each matched statement to the given block.
+    # Queries each constituent graph for RDF statements matching the given `pattern`, yielding each matched statement to the given block.
+    #
+    # If called without a block, returns an enumerator
     #
     # @param  [RDF::Query::Pattern] pattern
     #   the query pattern to match
@@ -284,25 +289,26 @@ module RDF
     # @yieldreturn [void] ignored
     # @return [void] ignored
     # @see RDF::Queryable#query_pattern
-    def query_pattern(pattern, &block)
+    def query_pattern(pattern, options = {}, &block)
+      return enum_for(:query_pattern, pattern, options) unless block_given?
       case pattern.graph_name
       when nil
         # Query against all graphs
-        each_graph {|graph| graph.send(:query_pattern, pattern, &block)}
+        each_graph {|graph| graph.send(:query_pattern, pattern, options, &block)}
       when FalseClass
         # Query against default graph only
-        default_graph.send(:query_pattern, pattern, &block)
+        default_graph.send(:query_pattern, pattern, options, &block)
       when RDF::Query::Variable
         # Query against all named graphs
         each_graph do |graph|
           source  = sources.reverse.detect {|s| s.has_graph?(graph.graph_name)}
-          RDF::Graph.new(graph.graph_name, data: source).send(:query_pattern, pattern, &block)
+          RDF::Graph.new(graph.graph_name, data: source).send(:query_pattern, pattern, options, &block)
         end
       else
         # Query against a specific graph
         if @named_graphs.include?(pattern.graph_name)
           source  = sources.reverse.detect {|s| s.has_graph?(pattern.graph_name)}
-          RDF::Graph.new(pattern.graph_name, data: source).send(:query_pattern, pattern, &block)
+          RDF::Graph.new(pattern.graph_name, data: source).send(:query_pattern, pattern, options, &block)
         end
       end
     end
