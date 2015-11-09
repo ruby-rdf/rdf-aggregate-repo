@@ -9,11 +9,15 @@ shared_examples "AggregateRepo" do
   require 'rdf/spec/enumerable'
   require 'rdf/spec/queryable'
 
-  before(:each) {@queryable = @enumerable = @countable = @repository}
-
-  include RDF_Enumerable
-  include RDF_Countable
-  include RDF_Queryable
+  it_behaves_like "an RDF::Enumerable" do
+    let(:enumerable) {@repository}
+  end
+  it_behaves_like "an RDF::Countable" do
+    let(:countable) {@repository}
+  end
+  it_behaves_like "an RDF::Queryable" do
+    let(:queryable) {@repository}
+  end
 end
 
 describe RDF::AggregateRepo do
