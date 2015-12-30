@@ -9,9 +9,8 @@ gem "rdf-turtle", git: "git://github.com/ruby-rdf/rdf-turtle.git", branch: "deve
 group :debug do
   gem "wirble"
   gem "redcarpet",  platforms: :ruby
-  gem "debugger",   platforms: :mri_19
   gem "ruby-debug", platforms: :jruby
-  gem "byebug",     platforms: [:mri_20, :mri_21]
+  gem "byebug",     platforms: :mri
 end
 
 group :test do
