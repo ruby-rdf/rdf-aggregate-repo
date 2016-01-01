@@ -156,7 +156,7 @@ module RDF
     # @return [Boolean]
     # @see RDF::Enumerable#has_statement?
     def has_statement?(statement)
-      each_graph.any? {|g| g.has_statement?(statement)}
+      each_graph.any? {|g| g.has_statement?(statement) && statement.graph_name == g.graph_name}
     end
 
     ##
