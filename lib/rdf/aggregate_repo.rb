@@ -235,7 +235,7 @@ module RDF
         # Send graph from appropriate source
         @named_graphs.each do |graph_name|
           source  = sources.reverse.detect {|s| s.has_graph?(graph_name)}
-          block.call(RDF::Graph.new(graph_name, data: source))
+          block.call(RDF::Graph.new(graph_name: graph_name, data: source))
         end
       end
       enum_graph
@@ -255,7 +255,7 @@ module RDF
           RDF::Graph.new
         when defaults == [false] && sources.length == 1
           # Trivial case
-          RDF::Graph.new(nil, data: sources.first)
+          RDF::Graph.new(data: sources.first)
         else
           # Otherwise, create a MergeGraph from the set of pairs of source and graph_name
           RDF::MergeGraph.new(name: nil) do |graph|
@@ -302,13 +302,13 @@ module RDF
         # Query against all named graphs
         each_graph do |graph|
           source  = sources.reverse.detect {|s| s.has_graph?(graph.graph_name)}
-          RDF::Graph.new(graph.graph_name, data: source).send(:query_pattern, pattern, options, &block)
+          RDF::Graph.new(graph_name: graph.graph_name, data: source).send(:query_pattern, pattern, options, &block)
         end
       else
         # Query against a specific graph
         if @named_graphs.include?(pattern.graph_name)
           source  = sources.reverse.detect {|s| s.has_graph?(pattern.graph_name)}
-          RDF::Graph.new(pattern.graph_name, data: source).send(:query_pattern, pattern, options, &block)
+          RDF::Graph.new(graph_name: pattern.graph_name, data: source).send(:query_pattern, pattern, options, &block)
         end
       end
     end

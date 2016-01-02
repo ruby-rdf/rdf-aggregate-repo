@@ -156,9 +156,9 @@ module RDF
       return enum_for(:each) unless block_given?
 
       # Add everything to a new graph for de-duplication
-      tmp = RDF::Graph.new(@graph_name, data: RDF::Repository.new)
+      tmp = RDF::Graph.new(graph_name: @graph_name, data: RDF::Repository.new)
       sources.each do |(source, gn)|
-        tmp << RDF::Graph.new(gn || nil, data: source)
+        tmp << RDF::Graph.new(graph_name: gn || nil, data: source)
       end
       tmp.each(&block)
     end

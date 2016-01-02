@@ -88,9 +88,9 @@ describe RDF::AggregateRepo do
 
   context "with specific named entities" do
     let(:repo) {RDF::Repository.new {|r| RDF::Spec.quads.each {|s| r << s}}}
-    let(:gkellogg) {RDF::Graph("http://greggkellogg.net/foaf#me", data: repo)}
-    let(:bendiken) {RDF::Graph("http://ar.to/#self", data: repo)}
-    let(:bhuga) {RDF::Graph("http://bhuga.net/#ben", data: repo)}
+    let(:gkellogg) {RDF::Graph(graph_name: "http://greggkellogg.net/foaf#me", data: repo)}
+    let(:bendiken) {RDF::Graph(graph_name: "http://ar.to/#self", data: repo)}
+    let(:bhuga) {RDF::Graph(graph_name: "http://bhuga.net/#ben", data: repo)}
     before(:each) do
       r = repo
       @repository = RDF::AggregateRepo.new do
