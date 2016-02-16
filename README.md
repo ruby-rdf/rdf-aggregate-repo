@@ -1,13 +1,13 @@
 # RDF::AggregateRepo
 
-An aggregate RDF::Repository supporting a subset of named graphs and zero or more named graphs mapped to the default graph.
+An aggregate RDF::Dataset supporting a subset of named graphs and zero or more named graphs mapped to the default graph.
 
 [![Gem Version](https://badge.fury.io/rb/rdf-aggregate-repo.png)](http://badge.fury.io/rb/rdf-aggregate-repo)
 [![Build Status](https://travis-ci.org/ruby-rdf/rdf-aggregate-repo.png?branch=master)](http://travis-ci.org/ruby-rdf/rdf-aggregate-repo)
 
 ## Description
 
-Maps named graphs from one or more `RDF::Queryable` instances into a single object, allowing a specific set of _named graphs_ to be seen, as well as a _default graph_ made up from one or more _named graphs_. This is used to implement [SPARQL Datasets][].
+Maps named graphs from one or more `RDF::Queryable` instances into a single dataset, allowing a specific set of _named graphs_ to be seen, as well as a _default graph_ made up from one or more _named graphs_. This is used to implement [RDF Datasets][].
 
 ## Examples
 
@@ -29,8 +29,8 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single obje
 
 ## Dependencies
 
-* [Ruby](http://ruby-lang.org/) (>= 1.8.7) or (>= 1.8.1 with [Backports][])
-* [RDF.rb][] (>= 1.0)
+* [Ruby](http://ruby-lang.org/) (>= 2.0)
+* [RDF.rb][] (>= 2.0)
 
 ## Mailing List
 
@@ -64,7 +64,7 @@ This is free and unencumbered public domain software. For more information,
 see <http://unlicense.org/> or the accompanying {file:UNLICENSE} file.
 
 [RDF.rb]:           http://ruby-rdf.github.com/
-[SPARQL Datasets]:  http://www.w3.org/TR/sparql11-query/#rdfDataset
+[RDF Datasets]:     https://www.w3.org/TR/rdf11-concepts/#dfn-rdf-dataset
 [YARD]:             http://yardoc.org/
 [YARD-GS]:          http://rubydoc.info/docs/yard/file/docs/GettingStarted.md
 [PDD]:              http://lists.w3.org/Archives/Public/public-rdf-ruby/2010May/0013.html

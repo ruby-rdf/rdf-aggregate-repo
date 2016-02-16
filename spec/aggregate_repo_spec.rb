@@ -2,21 +2,9 @@ require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'rdf/turtle'
 
 shared_examples "AggregateRepo" do
-  #require 'rdf/spec/repository'
-
-  #include RDF_Repository
-  require 'rdf/spec/countable'
-  require 'rdf/spec/enumerable'
-  require 'rdf/spec/queryable'
-
-  it_behaves_like "an RDF::Enumerable" do
-    let(:enumerable) {@repository}
-  end
-  it_behaves_like "an RDF::Countable" do
-    let(:countable) {@repository}
-  end
-  it_behaves_like "an RDF::Queryable" do
-    let(:queryable) {@repository}
+  require 'rdf/spec/dataset'
+  it_behaves_like "an RDF::Dataset" do
+    let(:dataset) {@dataset}
   end
 end
 
@@ -59,31 +47,31 @@ describe RDF::AggregateRepo do
     let(:repo) {RDF::Repository.new {|r| RDF::Spec.quads.each {|s| r << s}}}
     before(:each) do
       r = repo
-      @repository = RDF::AggregateRepo.new do
+      @dataset = RDF::AggregateRepo.new do
         source r
         default false
       end
       # Add all named graphs
-      repo.each_graph {|c| @repository.named(c.graph_name) if c.graph_name}
+      repo.each_graph {|c| @dataset.named(c.graph_name) if c.graph_name}
     end
-    subject {@repository}
+    subject {@dataset}
 
     it {is_expected.not_to be_empty}
     its(:count) {is_expected.to eql repo.count}
-    its(:graph_names) {is_expected.to include(*@repository.graph_names)}
+    its(:graph_names) {is_expected.to include(*@dataset.graph_names)}
     describe "#default_graph" do
-      subject {@repository.default_graph}
+      subject {@dataset.default_graph}
       its(:count) {is_expected.to eql repo.reject(&:graph_name).length}
       it "statements have no graph_name" do
         expect(subject.statements.map(&:graph_name)).to all(be_nil)
       end
     end
     describe "#enum_graph" do
-      subject {@repository.enum_graph}
+      subject {@dataset.enum_graph}
       its(:count) {is_expected.to eql repo.each_graph.count}
     end
 
-    include_examples "AggregateRepo", @repository
+    include_examples "AggregateRepo", @dataset
   end
 
   context "with specific named entities" do
@@ -93,27 +81,27 @@ describe RDF::AggregateRepo do
     let(:bhuga) {RDF::Graph(graph_name: "http://bhuga.net/#ben", data: repo)}
     before(:each) do
       r = repo
-      @repository = RDF::AggregateRepo.new do
+      @dataset = RDF::AggregateRepo.new do
         source r
         default RDF::URI("http://greggkellogg.net/foaf#me")
         named RDF::URI("http://ar.to/#self")
         named RDF::URI("http://bhuga.net/#ben")
       end
     end
-    subject {@repository}
+    subject {@dataset}
 
     it {is_expected.not_to be_empty}
     its(:count) {is_expected.to eql [gkellogg, bendiken, bhuga].map(&:count).reduce(:+)}
     its(:graph_names) {is_expected.to eql [RDF::URI("http://ar.to/#self"), RDF::URI("http://bhuga.net/#ben")]}
     describe "#default_graph" do
-      subject {@repository.default_graph}
+      subject {@dataset.default_graph}
       its(:count) {is_expected.to eql gkellogg.count}
       it "statements have no graph_name" do
         expect(subject.statements.map(&:graph_name)).to all(be_nil)
       end
     end
     describe "#enum_graph" do
-      subject {@repository.enum_graph}
+      subject {@dataset.enum_graph}
       its(:count) {is_expected.to eql 3}
     end
   end
@@ -121,19 +109,19 @@ describe RDF::AggregateRepo do
   context "dataset-12b" do
     before(:each) do
       @repo = RDF::Repository.new
-      @repository = RDF::AggregateRepo.new(@repo)
+      @dataset = RDF::AggregateRepo.new(@repo)
       Dir.glob(File.expand_path("..", __FILE__) + "/data/*.ttl").each do |f|
         base = RDF::URI("http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/#{f.split('/').last}")
         @repo.load(f, base_uri: base, graph_name: base)
         if f =~ /dup/
-          @repository.defaults << base
+          @dataset.defaults << base
         else
-          @repository.named base
+          @dataset.named base
         end
       end
     end
     let(:repo) {@repo}
-    subject {@repository}
+    subject {@dataset}
 
     its(:sources) {is_expected.not_to be_empty}
     its(:defaults) {is_expected.not_to be_empty}

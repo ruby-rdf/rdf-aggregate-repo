@@ -5,7 +5,7 @@ module RDF
   autoload :VERSION, 'rdf/aggregate_repo/version'
 
   ##
-  # An aggregated RDF repository.
+  # An aggregated RDF datset.
   #
   # Aggregates the default and named graphs from one or more instances
   # implementing RDF::Queryable. By default, the aggregate projects
@@ -33,7 +33,7 @@ module RDF
   #   end
   #
   # @todo Allow graph names to reassigned with queryable
-  class AggregateRepo < RDF::Repository
+  class AggregateRepo < RDF::Dataset
     ##
     # The set of aggregated `queryable` instances included in this aggregate
     #
@@ -58,11 +58,17 @@ module RDF
     #   @yieldparam [RDF::AggregateRepo] aggregation
     #   @yieldreturn [void] ignored
     def initialize(*queryable, &block)
-      options = queryable.last.is_a?(Hash) ? queryable.pop.dup : {}
+      @options = queryable.last.is_a?(Hash) ? queryable.pop.dup : {}
       @sources = queryable
       @defaults = []
       @named_graphs = []
-      super(options, &block)
+
+      if block_given?
+        case block.arity
+          when 1 then block.call(self)
+          else instance_eval(&block)
+        end
+      end
     end
 
     ##
@@ -110,8 +116,8 @@ module RDF
     # @see RDF::Enumerable#supports?
     def supports?(feature)
       case feature.to_sym
-      when :graph_name   then @options[:with_graph_name]
-      when :validity  then @options.fetch(:with_validity, true)
+      when :graph_name    then @options[:with_graph_name]
+      when :validity      then @options.fetch(:with_validity, true)
       else false
       end
     end
