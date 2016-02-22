@@ -156,9 +156,9 @@ module RDF
       return enum_for(:each) unless block_given?
 
       # Add everything to a new graph for de-duplication
-      tmp = RDF::Graph.new(@graph_name, data: RDF::Repository.new)
+      tmp = RDF::Graph.new(graph_name: @graph_name, data: RDF::Repository.new)
       sources.each do |(source, gn)|
-        tmp << RDF::Graph.new(gn || nil, data: source)
+        tmp << RDF::Graph.new(graph_name: gn || nil, data: source)
       end
       tmp.each(&block)
     end
@@ -186,11 +186,12 @@ module RDF
     ##
     # @private
     # @see RDF::Queryable#query_pattern
-    def query_pattern(pattern, &block)
+    def query_pattern(pattern, options = {}, &block)
+      return enum_for(:query_pattern, pattern, options) unless block_given?
       pattern = pattern.dup
       sources.each do |(source, gn)|
         pattern.graph_name = gn
-        source.send(:query_pattern, pattern, &block)
+        source.send(:query_pattern, pattern, options, &block)
       end
     end
   end
