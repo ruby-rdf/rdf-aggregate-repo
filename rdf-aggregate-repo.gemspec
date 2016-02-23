@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
 
   gem.name               = 'rdf-aggregate-repo'
   gem.homepage           = 'http://ruby-rdf.github.com/rdf-aggregate-repo'
-  gem.license            = 'Public Domain' if gem.respond_to?(:license=)
+  gem.license            = 'Unlicense'
   gem.summary            = 'An aggregate RDF::Repository supporting a subset of named graphs and zero or more named graphs mapped to the default graph.'
   gem.description        = %(A gem extending RDF.rb with SPARQL dataset construction semantics.)
 
