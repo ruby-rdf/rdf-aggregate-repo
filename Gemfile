@@ -2,12 +2,12 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "rdf",        git: "git://github.com/ruby-rdf/rdf.git",         branch: "develop"
-gem "rdf-spec",   git: "git://github.com/ruby-rdf/rdf-spec.git",    branch: "develop"
-gem 'rdf-isomorphic', git: "git://github.com/ruby-rdf/rdf-isomorphic.git",  branch: "develop"
-gem "rdf-turtle", git: "git://github.com/ruby-rdf/rdf-turtle.git",  branch: "develop"
-gem 'ebnf',       git: "git://github.com/gkellogg/ebnf.git",        branch: "develop"
-gem 'sxp',        git: "git://github.com/gkellogg/sxp-ruby.git"
+gem "rdf",            github: "ruby-rdf/rdf",             branch: "develop"
+gem "rdf-spec",       github: "ruby-rdf/rdf-spec",        branch: "develop"
+gem 'rdf-isomorphic', github: "ruby-rdf/rdf-isomorphic",  branch: "develop"
+gem "rdf-turtle",     github: "ruby-rdf/rdf-turtle",      branch: "develop"
+gem 'ebnf',           github: "gkellogg/ebnf",            branch: "develop"
+gem 'sxp',            github: "gkellogg/sxp-ruby",        branch: "develop"
 
 group :debug do
   gem "wirble"
