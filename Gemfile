@@ -10,7 +10,6 @@ gem 'ebnf',           github: "gkellogg/ebnf",            branch: "develop"
 gem 'sxp',            github: "dryruby/sxp.rb",           branch: "develop"
 
 group :debug do
-  gem "wirble"
   gem "redcarpet",  platforms: :ruby
   gem "ruby-debug", platforms: :jruby
   gem "byebug",     platforms: :mri
