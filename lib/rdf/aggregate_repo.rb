@@ -2,7 +2,6 @@ require 'rdf'
 
 module RDF
   autoload :MergeGraph, 'rdf/aggregate_repo/merge_graph'
-  autoload :VERSION, 'rdf/aggregate_repo/version'
 
   ##
   # An aggregated RDF datset.
@@ -34,6 +33,8 @@ module RDF
   #
   # @todo Allow graph names to reassigned with queryable
   class AggregateRepo < RDF::Dataset
+    autoload :VERSION, 'rdf/aggregate_repo/version'
+
     ##
     # The set of aggregated `queryable` instances included in this aggregate
     #
