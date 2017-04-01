@@ -117,8 +117,9 @@ module RDF
     # @see RDF::Enumerable#supports?
     def supports?(feature)
       case feature.to_sym
-      when :graph_name    then @options[:with_graph_name]
-      when :validity      then @options.fetch(:with_validity, true)
+      when :graph_name        then @options[:with_graph_name]
+      when :validity          then @options.fetch(:with_validity, true)
+      when :literal_equality  then sources.all? {|s| s.supports?(:literal_equality)}
       else false
       end
     end
