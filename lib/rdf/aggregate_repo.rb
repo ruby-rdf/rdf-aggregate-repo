@@ -52,7 +52,7 @@ module RDF
     ##
     # Create a new aggregation instance.
     #
-    # @overload initialize(queryable = [], options = {})
+    # @overload initialize(queryable = [], **options)
     #   @param [Array<RDF::Queryable>] queryable ([])
     #   @param [Hash{Symbol => Object}] options ({})
     #   @yield aggregation
@@ -297,26 +297,26 @@ module RDF
     # @yieldreturn [void] ignored
     # @return [void] ignored
     # @see RDF::Queryable#query_pattern
-    def query_pattern(pattern, options = {}, &block)
-      return enum_for(:query_pattern, pattern, options) unless block_given?
+    def query_pattern(pattern, **options, &block)
+      return enum_for(:query_pattern, pattern, **options) unless block_given?
       case pattern.graph_name
       when nil
         # Query against all graphs
-        each_graph {|graph| graph.send(:query_pattern, pattern, options, &block)}
+        each_graph {|graph| graph.send(:query_pattern, pattern, **options, &block)}
       when FalseClass
         # Query against default graph only
-        default_graph.send(:query_pattern, pattern, options, &block)
+        default_graph.send(:query_pattern, pattern, **options, &block)
       when RDF::Query::Variable
         # Query against all named graphs
         each_graph do |graph|
           source  = sources.reverse.detect {|s| s.has_graph?(graph.graph_name)}
-          RDF::Graph.new(graph_name: graph.graph_name, data: source).send(:query_pattern, pattern, options, &block)
+          RDF::Graph.new(graph_name: graph.graph_name, data: source).send(:query_pattern, pattern, **options, &block)
         end
       else
         # Query against a specific graph
         if @named_graphs.include?(pattern.graph_name)
           source  = sources.reverse.detect {|s| s.has_graph?(pattern.graph_name)}
-          RDF::Graph.new(graph_name: pattern.graph_name, data: source).send(:query_pattern, pattern, options, &block)
+          RDF::Graph.new(graph_name: pattern.graph_name, data: source).send(:query_pattern, pattern, **options, &block)
         end
       end
     end
