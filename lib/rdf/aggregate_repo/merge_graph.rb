@@ -40,16 +40,14 @@ module RDF
     ##
     # Create a new aggregation instance.
     #
-    # @overload initialize(queryable = [], options = {})
-    #   @param [Hash{Symbol => Object}] options ({})
-    #   @option options [RDF::Resource] :graph_name
-    #   @option options [RDF::Resource] :name alias for :graph_name
-    #   @yield merger
-    #   @yieldparam [RDF::MergeGraph] self
-    #   @yieldreturn [void] ignored
-    def initialize(options = {}, &block)
+    # @param [RDF::Resource] :graph_name
+    # @param [RDF::Resource] :name alias for :graph_name
+    # @yield merger
+    # @yieldparam [RDF::MergeGraph] self
+    # @yieldreturn [void] ignored
+    def initialize(graph_name: nil, name: nil, &block)
       @sources = []
-      @graph_name = options[:graph_name] || options[:name]
+      @graph_name = graph_name || name
 
       if block_given?
         case block.arity
@@ -186,12 +184,12 @@ module RDF
     ##
     # @private
     # @see RDF::Queryable#query_pattern
-    def query_pattern(pattern, options = {}, &block)
-      return enum_for(:query_pattern, pattern, options) unless block_given?
+    def query_pattern(pattern, **options, &block)
+      return enum_for(:query_pattern, pattern, **options) unless block_given?
       pattern = pattern.dup
       sources.each do |(source, gn)|
         pattern.graph_name = gn
-        source.send(:query_pattern, pattern, options, &block)
+        source.send(:query_pattern, pattern, **options, &block)
       end
     end
   end
