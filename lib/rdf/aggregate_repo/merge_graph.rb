@@ -40,8 +40,8 @@ module RDF
     ##
     # Create a new aggregation instance.
     #
-    # @param [RDF::Resource] :graph_name
-    # @param [RDF::Resource] :name alias for :graph_name
+    # @param [RDF::Resource] graph_name
+    # @param [RDF::Resource] name alias for `graph_name`
     # @yield merger
     # @yieldparam [RDF::MergeGraph] self
     # @yieldreturn [void] ignored

@@ -76,23 +76,23 @@ describe RDF::AggregateRepo do
 
   context "with specific named entities" do
     let(:repo) {RDF::Repository.new {|r| RDF::Spec.quads.each {|s| r << s}}}
-    let(:gkellogg) {RDF::Graph(graph_name: "http://greggkellogg.net/foaf#me", data: repo)}
-    let(:bendiken) {RDF::Graph(graph_name: "http://ar.to/#self", data: repo)}
-    let(:bhuga) {RDF::Graph(graph_name: "http://bhuga.net/#ben", data: repo)}
+    let(:gkellogg) {RDF::Graph(graph_name: "https://greggkellogg.net/foaf#me", data: repo)}
+    let(:bendiken) {RDF::Graph(graph_name: "https://ar.to/#self", data: repo)}
+    let(:bhuga) {RDF::Graph(graph_name: "https://bhuga.net/#ben", data: repo)}
     before(:each) do
       r = repo
       @dataset = RDF::AggregateRepo.new do
         source r
-        default RDF::URI("http://greggkellogg.net/foaf#me")
-        named RDF::URI("http://ar.to/#self")
-        named RDF::URI("http://bhuga.net/#ben")
+        default RDF::URI("https://greggkellogg.net/foaf#me")
+        named RDF::URI("https://ar.to/#self")
+        named RDF::URI("https://bhuga.net/#ben")
       end
     end
     subject {@dataset}
 
     it {is_expected.not_to be_empty}
     its(:count) {is_expected.to eql [gkellogg, bendiken, bhuga].map(&:count).reduce(:+)}
-    its(:graph_names) {is_expected.to eql [RDF::URI("http://ar.to/#self"), RDF::URI("http://bhuga.net/#ben")]}
+    its(:graph_names) {is_expected.to eql [RDF::URI("https://ar.to/#self"), RDF::URI("https://bhuga.net/#ben")]}
     describe "#default_graph" do
       subject {@dataset.default_graph}
       its(:count) {is_expected.to eql gkellogg.count}
