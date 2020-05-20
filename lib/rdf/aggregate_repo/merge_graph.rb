@@ -18,7 +18,7 @@ module RDF
   #     name false
   #   end
   #
-  # @see http://www.w3.org/TR/rdf11-mt/#dfn-merge
+  # @see https://www.w3.org/TR/rdf11-mt/#dfn-merge
   class MergeGraph
     include RDF::Value
     include RDF::Countable

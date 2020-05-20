@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = 'rdf-aggregate-repo'
-  gem.homepage           = 'http://github.com/ruby-rdf/rdf-aggregate-repo'
+  gem.homepage           = 'https://github.com/ruby-rdf/rdf-aggregate-repo'
   gem.license            = 'Unlicense'
   gem.summary            = 'An aggregate RDF::Repository supporting a subset of named graphs and zero or more named graphs mapped to the default graph.'
   gem.description        = %(A gem extending RDF.rb with SPARQL dataset construction semantics.)
