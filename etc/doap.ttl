@@ -12,8 +12,8 @@
   doap:name          "RDF::AggregateRepo" ;
   doap:homepage      <https://github.com/ruby-rdf/rdf-aggregate-repo> ;
   doap:license       <https://unlicense.org/1.0/> ;
-  doap:shortdesc     "An aggregate RDF::Repository supporting a subset of named graphs and zero or more named graphs mapped to the default graph."@en ;
-  doap:description   "A gem extending RDF.rb with SPARQL dataset construction semantics."@en ;
+  doap:description   "An aggregate RDF::Repository supporting a subset of named graphs and zero or more named graphs mapped to the default graph."@en ;
+  doap:shortdesc     "RDF::AggregateRepo extends RDF.rb with SPARQL dataset construction semantics."@en ;
   doap:created       "2013-04-26"^^xsd:date ;
   doap:programming-language "Ruby" ;
   doap:implements    <https://www.w3.org/TR/sparql11-query/#specifyingDataset> ;
@@ -27,8 +27,5 @@
   doap:maintainer    <https://greggkellogg.net/foaf#me> ;
   doap:documenter    <https://greggkellogg.net/foaf#me> ;
   foaf:maker         <https://greggkellogg.net/foaf#me> ;
-  dc:title           "RDF::AggregateRepo"@en ;
-  dc:description     "A gem extending RDF.rb with SPARQL dataset construction semantics."@en ;
-  dc:date            "2013-04-26"^^xsd:date ;
   dc:creator         <https://greggkellogg.net/foaf#me> ;
   dc:isPartOf        <https://rubygems.org/gems/rdf> .
