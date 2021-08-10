@@ -30,7 +30,6 @@ begin
   SimpleCov.start do
     add_filter "/spec/"
   end
-  Coveralls.wear!
 rescue LoadError => e
   STDERR.puts "Coverage Skipped: #{e.message}"
 end
