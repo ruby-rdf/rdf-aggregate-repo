@@ -31,8 +31,8 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
 
 ## Dependencies
 
-* [Ruby](https://ruby-lang.org/) (>= 2.4)
-* [RDF.rb][] (~> 3.1)
+* [Ruby](https://ruby-lang.org/) (>= 2.6)
+* [RDF.rb][] (~> 3.2)
 
 ## Mailing List
 
