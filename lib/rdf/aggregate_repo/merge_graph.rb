@@ -18,7 +18,7 @@ module RDF
   #     name false
   #   end
   #
-  # @see http://www.w3.org/TR/rdf11-mt/#dfn-merge
+  # @see https://www.w3.org/TR/rdf11-mt/#dfn-merge
   class MergeGraph
     include RDF::Value
     include RDF::Countable
@@ -40,8 +40,8 @@ module RDF
     ##
     # Create a new aggregation instance.
     #
-    # @param [RDF::Resource] :graph_name
-    # @param [RDF::Resource] :name alias for :graph_name
+    # @param [RDF::Resource] graph_name
+    # @param [RDF::Resource] name alias for `graph_name`
     # @yield merger
     # @yieldparam [RDF::MergeGraph] self
     # @yieldreturn [void] ignored

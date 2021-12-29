@@ -2,8 +2,10 @@
 
 An aggregate RDF::Dataset supporting a subset of named graphs and zero or more named graphs mapped to the default graph.
 
-[![Gem Version](https://badge.fury.io/rb/rdf-aggregate-repo.png)](http://badge.fury.io/rb/rdf-aggregate-repo)
-[![Build Status](https://travis-ci.org/ruby-rdf/rdf-aggregate-repo.png?branch=master)](http://travis-ci.org/ruby-rdf/rdf-aggregate-repo)
+[![Gem Version](https://badge.fury.io/rb/rdf-aggregate-repo.png)](https://badge.fury.io/rb/rdf-aggregate-repo)
+[![Build Status](https://github.com/ruby-rdf/rdf-aggregate-repo/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/rdf-aggregate-repo/actions?query=workflow%3ACI)
+[![Coverage Status](https://coveralls.io/repos/ruby-rdf/rdf-aggregate-repo/badge.svg?branch=develop)](https://coveralls.io/github/ruby-rdf/rdf-aggregate-repo?branch=develop)
+[![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
 
 ## Description
 
@@ -13,7 +15,7 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
 
     require 'rdf'
     require 'rdf/nquads'
-    repo = RDF::Repository.load("http://ruby-rdf.github.com/rdf/etc/doap.nq")
+    repo = RDF::Repository.load("https://ruby-rdf.github.com/rdf/etc/doap.nq")
     
     # Instantiate a new aggregate repo based on an existing repo
     aggregate = RDF::AggregateRepo.new(repo)
@@ -22,23 +24,23 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
     aggregate.add_default(false)
     
     # Use a single named graph
-    aggregate.add_named(RDF::URI("http://greggkellogg.net/foaf#me"))
+    aggregate.add_named(RDF::URI("https://greggkellogg.net/foaf#me"))
 
     # Retrieve all contexts
-    aggreggate.contexts.to_a #=> [RDF::URI("http://greggkellogg.net/foaf#me")]
+    aggreggate.contexts.to_a #=> [RDF::URI("https://greggkellogg.net/foaf#me")]
 
 ## Dependencies
 
-* [Ruby](http://ruby-lang.org/) (>= 2.4)
-* [RDF.rb][] (~> 3.1)
+* [Ruby](https://ruby-lang.org/) (>= 2.6)
+* [RDF.rb][] (~> 3.2)
 
 ## Mailing List
 
-* <http://lists.w3.org/Archives/Public/public-rdf-ruby/>
+* <https://lists.w3.org/Archives/Public/public-rdf-ruby/>
 
 ## Author
 
-* [Gregg Kellogg](http://github.com/gkellogg) - <http://greggkellogg.net/>
+* [Gregg Kellogg](https://github.com/gkellogg) - <https://greggkellogg.net/>
 
 ## Contributing
 This repository uses [Git Flow](https://github.com/nvie/gitflow) to mange development and release activity. All submissions _must_ be on a feature branch based on the _develop_ branch to ease staging and integration.
@@ -56,15 +58,17 @@ This repository uses [Git Flow](https://github.com/nvie/gitflow) to mange develo
   enough, be assured we will eventually add you in there.
 * Do note that in order for us to merge any non-trivial changes (as a rule
   of thumb, additions larger than about 15 lines of code), we need an
-  explicit [public domain dedication][PDD] on record from you.
+  explicit [public domain dedication][PDD] on record from you,
+  which you will be asked to agree to on the first commit to a repo within the organization.
+  Note that the agreement applies to all repos in the [Ruby RDF](https://github.com/ruby-rdf/) organization.
 
 ## License
 
 This is free and unencumbered public domain software. For more information,
-see <http://unlicense.org/> or the accompanying {file:UNLICENSE} file.
+see <https://unlicense.org/> or the accompanying {file:UNLICENSE} file.
 
-[RDF.rb]:           http://ruby-rdf.github.com/
+[RDF.rb]:           https://ruby-rdf.github.com/
 [RDF Datasets]:     https://www.w3.org/TR/rdf11-concepts/#dfn-rdf-dataset
-[YARD]:             http://yardoc.org/
-[YARD-GS]:          http://rubydoc.info/docs/yard/file/docs/GettingStarted.md
-[PDD]:              http://lists.w3.org/Archives/Public/public-rdf-ruby/2010May/0013.html
+[YARD]:             https://yardoc.org/
+[YARD-GS]:          https://rubydoc.info/docs/yard/file/docs/GettingStarted.md
+[PDD]:              https://unlicense.org/#unlicensing-contributions
