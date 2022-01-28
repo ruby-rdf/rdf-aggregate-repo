@@ -15,7 +15,7 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
 
     require 'rdf'
     require 'rdf/nquads'
-    repo = RDF::Repository.load("https://ruby-rdf.github.com/rdf/etc/doap.nq")
+    repo = RDF::Repository.load("https://ruby-rdf.github.io/rdf/etc/doap.nq")
     
     # Instantiate a new aggregate repo based on an existing repo
     aggregate = RDF::AggregateRepo.new(repo)
@@ -67,7 +67,7 @@ This repository uses [Git Flow](https://github.com/nvie/gitflow) to mange develo
 This is free and unencumbered public domain software. For more information,
 see <https://unlicense.org/> or the accompanying {file:UNLICENSE} file.
 
-[RDF.rb]:           https://ruby-rdf.github.com/
+[RDF.rb]:           https://ruby-rdf.github.io/
 [RDF Datasets]:     https://www.w3.org/TR/rdf11-concepts/#dfn-rdf-dataset
 [YARD]:             https://yardoc.org/
 [YARD-GS]:          https://rubydoc.info/docs/yard/file/docs/GettingStarted.md
