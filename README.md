@@ -14,6 +14,7 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
 ## Examples
 
     require 'rdf'
+    require 'rdf/aggregate_repo
     require 'rdf/nquads'
     repo = RDF::Repository.load("https://ruby-rdf.github.io/rdf/etc/doap.nq")
     
@@ -21,13 +22,13 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
     aggregate = RDF::AggregateRepo.new(repo)
     
     # Use the default graph from the repo as the default graph of the aggregate
-    aggregate.add_default(false)
+    aggregate.default(false)
     
     # Use a single named graph
-    aggregate.add_named(RDF::URI("https://greggkellogg.net/foaf#me"))
+    aggregate.named(RDF::URI("https://greggkellogg.net/foaf#me"))
 
     # Retrieve all contexts
-    aggreggate.contexts.to_a #=> [RDF::URI("https://greggkellogg.net/foaf#me")]
+    aggreggate.aggregate.graph_names #=> [RDF::URI("https://greggkellogg.net/foaf#me")]
 
 ## Dependencies
 
