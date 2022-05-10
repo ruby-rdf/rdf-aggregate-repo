@@ -268,9 +268,9 @@ module RDF
           # Otherwise, create a MergeGraph from the set of pairs of source and graph_name
           RDF::MergeGraph.new(name: nil) do |graph|
             if defaults == [false]
-              graph.sources.each do |s|
+              sources.each do |s|
                 # Add default graph from each source
-                source s, false
+                graph.source s, false
               end
             else
               defaults.each do |graph_name|
