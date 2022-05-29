@@ -74,6 +74,33 @@ describe RDF::AggregateRepo do
     include_examples "AggregateRepo", @dataset
   end
 
+  context "multiple sources" do
+    let(:r1) {RDF::Repository.new {|r| r << RDF::Statement(RDF::URI('s1'), RDF::URI('p1'), "o1")}}
+    let(:r2) {RDF::Repository.new {|r| r << RDF::Statement(RDF::URI('s2'), RDF::URI('p2'), "o2", graph_name: RDF::URI('g1'))}}
+    before(:each) do
+      @dataset = RDF::AggregateRepo.new(r1, r2) do
+        default false
+        named RDF::URI('g1')
+      end
+    end
+    subject {@dataset}
+
+    it {is_expected.not_to be_empty}
+    its(:count) {is_expected.to eql 2}
+    its(:graph_names) {is_expected.to include(*@dataset.graph_names)}
+    describe "#default_graph" do
+      subject {@dataset.default_graph}
+      its(:count) {is_expected.to eql 1}
+      it "statements have no graph_name" do
+        expect(subject.statements.map(&:graph_name)).to all(be_nil)
+      end
+    end
+    describe "#enum_graph" do
+      subject {@dataset.enum_graph}
+      its(:count) {is_expected.to eql 2}
+    end
+  end
+
   context "with specific named entities" do
     let(:repo) {RDF::Repository.new {|r| RDF::Spec.quads.each {|s| r << s}}}
     let(:gkellogg) {RDF::Graph(graph_name: "https://greggkellogg.net/foaf#me", data: repo)}
