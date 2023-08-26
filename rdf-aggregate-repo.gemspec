@@ -25,9 +25,9 @@ Gem::Specification.new do |gem|
   gem.files              = %w(AUTHORS README.md UNLICENSE VERSION etc/doap.ttl) + Dir.glob('lib/**/*.rb')
   gem.require_paths      = %w(lib)
 
-  gem.required_ruby_version      = '>= 2.6'
+  gem.required_ruby_version      = '>= 3.0'
   gem.requirements               = []
-  gem.add_runtime_dependency     'rdf',         '~> 3.2'
+  gem.add_runtime_dependency     'rdf',         '~> 3.3'
   gem.add_development_dependency 'rdf-spec',    '~> 3.2'
   gem.add_development_dependency 'rdf-turtle',  '~> 3.2'
   gem.add_development_dependency 'rspec',       '~> 3.10'
