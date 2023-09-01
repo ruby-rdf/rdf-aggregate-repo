@@ -2,7 +2,7 @@
 
 An aggregate RDF::Dataset supporting a subset of named graphs and zero or more named graphs mapped to the default graph.
 
-[![Gem Version](https://badge.fury.io/rb/rdf-aggregate-repo.png)](https://badge.fury.io/rb/rdf-aggregate-repo)
+[![Gem Version](https://badge.fury.io/rb/rdf-aggregate-repo.svg)](https://badge.fury.io/rb/rdf-aggregate-repo)
 [![Build Status](https://github.com/ruby-rdf/rdf-aggregate-repo/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/rdf-aggregate-repo/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/ruby-rdf/rdf-aggregate-repo/badge.svg?branch=develop)](https://coveralls.io/github/ruby-rdf/rdf-aggregate-repo?branch=develop)
 [![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
@@ -32,8 +32,8 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
 
 ## Dependencies
 
-* [Ruby](https://ruby-lang.org/) (>= 2.6)
-* [RDF.rb][] (~> 3.2)
+* [Ruby](https://ruby-lang.org/) (>=3.0)
+* [RDF.rb][] (~> 3.3)
 
 ## Mailing List
 
