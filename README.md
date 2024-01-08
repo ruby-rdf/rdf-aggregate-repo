@@ -35,6 +35,10 @@ Maps named graphs from one or more `RDF::Queryable` instances into a single data
 * [Ruby](https://ruby-lang.org/) (>=3.0)
 * [RDF.rb][] (~> 3.3)
 
+## Change Log
+
+See [Release Notes on GitHub](https://github.com/ruby-rdf/rdf-aggregate-repo/releases)
+
 ## Mailing List
 
 * <https://lists.w3.org/Archives/Public/public-rdf-ruby/>
